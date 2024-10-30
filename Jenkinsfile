@@ -21,11 +21,13 @@ pipeline {
                 }
             }
         }
-        stage('Instalar dependencias en venv') {
+        stage('Instalar Dependencias en venv') {
             steps {
                 dir('/home/daniel/devops-java-addition-example') {
                     sh '''
-                    /bin/bash -c "source venv/bin/activate && pip install -r requirements.txt || pip install selenium"
+                    python3 -m venv venv
+                    source venv/bin/activate
+                    pip install -r requirements.txt
                     '''
                 }
             }
@@ -34,7 +36,8 @@ pipeline {
             steps {
                 dir('/home/daniel/devops-java-addition-example') {
                     sh '''
-                    /bin/bash -c "source venv/bin/activate && python3 src/test/python/test_addition.py"
+                    source venv/bin/activate
+                    python3 src/test/python/test_addition.py
                     '''
                 }
             }
