@@ -1,0 +1,18 @@
+<html>
+<body>
+  <input type="text" id="num1" placeholder="Ingrese el primer número">
+  <input type="text" id="num2" placeholder="Ingrese el segundo número">
+  <button id="submit" onclick="sumar()">Calcular Suma</button>
+  <div id="result"></div>
+
+  <script>
+    function sumar() {
+      var num1 = parseFloat(document.getElementById('num1').value);
+      var num2 = parseFloat(document.getElementById('num2').value);
+      var suma = num1 + num2;
+      document.getElementById('result').innerText = 'La suma es: ' + suma;
+    }
+  </script>
+</body>
+</html>
+

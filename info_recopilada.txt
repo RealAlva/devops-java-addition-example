@@ -1,0 +1,208 @@
+-e 
+### Contenido del Jenkinsfile ###
+pipeline {
+    agent any
+    stages {
+        stage('Preparar Repositorio') {
+            steps {
+                dir('/home/daniel/devops-java-addition-example') {
+                    sh '''
+                    git init
+                    git remote remove origin || true
+                    git remote add origin /home/daniel/devops-java-addition-example
+                    git fetch origin
+                    git reset --hard origin/main
+                    '''
+                }
+            }
+        }
+        stage('Construir con Maven') {
+            steps {
+                dir('/home/daniel/devops-java-addition-example') {
+                    sh 'mvn clean install'
+                }
+            }
+        }
+        stage('Instalar Dependencias en venv') {
+            steps {
+                dir('/home/daniel/devops-java-addition-example') {
+                    sh '''
+                    python3 -m venv venv
+                    source venv/bin/activate
+                    pip install -r requirements.txt
+                    '''
+                }
+            }
+        }
+        stage('Pruebas con Selenium') {
+            steps {
+                dir('/home/daniel/devops-java-addition-example') {
+                    sh '''
+                    source venv/bin/activate
+                    python3 src/test/python/test_addition.py
+                    '''
+                }
+            }
+        }
+        stage('Construir Imagen Docker') {
+            steps {
+                dir('/home/daniel/devops-java-addition-example') {
+                    sh 'docker build -t sumtwonumbers .'
+                }
+            }
+        }
+        stage('Desplegar en Docker') {
+            steps {
+                sh 'docker run -d --name sumtwonumbers -p 8080:8080 sumtwonumbers'
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Integración y Despliegue completados exitosamente.'
+        }
+        failure {
+            echo 'El Pipeline ha fallado.'
+        }
+    }
+}
+-e 
+### Contenido de src/test/python/test_addition.py ###
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+driver = webdriver.Chrome()
+driver.get("file:///home/daniel/devops-java-addition-example/src/test/resources/addition_test.html")  # Ruta local del archivo HTML
+
+input1 = driver.find_element(By.ID, "num1")
+input2 = driver.find_element(By.ID, "num2")
+submit = driver.find_element(By.ID, "submit")
+
+input1.send_keys("5")
+input2.send_keys("7")
+submit.click()
+
+result = driver.find_element(By.ID, "result").text
+assert result == "La suma es: 12", "Test fallido: Resultado incorrecto"
+
+driver.quit()
+-e 
+### Permisos del directorio del proyecto ###
+total 132
+drwxrwxr-x  6 jenkins jenkins  4096 Oct 30 17:59 .
+drwxr-xr-x 55 daniel  daniel  12288 Oct 30 17:59 ..
+drwxrwxr-x  8 jenkins jenkins  4096 Oct 30 17:55 .git
+-rw-r--r--  1 root    root     2767 Oct 30 17:59 info_recopilada.txt
+-rwxrwxr-x  1 jenkins jenkins  2004 Oct 30 17:55 Jenkinsfile
+-rwxrwxr-x  1 jenkins jenkins   496 Oct 30 15:33 pom.xml
+-rw-rw-r--  1 jenkins jenkins    47 Oct 30 17:49 requirements.txt
+-rwxrwxr-x  1 jenkins jenkins 78522 Oct 30 15:35 salida maven-build.txt
+drwxrwxr-x  3 jenkins jenkins  4096 Oct 30 15:39 src
+-rwxrwxr-x  1 jenkins jenkins   475 Oct 30 15:31 SumTwoNumbers.java
+drwxrwxr-x  4 jenkins jenkins  4096 Oct 30 17:29 target
+drwxrwxr-x  5 jenkins jenkins  4096 Oct 30 17:25 venv
+-e 
+### Contenido del Jenkinsfile ###
+pipeline {
+    agent any
+    stages {
+        stage('Preparar Repositorio') {
+            steps {
+                dir('/home/daniel/devops-java-addition-example') {
+                    sh '''
+                    git init
+                    git remote remove origin || true
+                    git remote add origin /home/daniel/devops-java-addition-example
+                    git fetch origin
+                    git reset --hard origin/main
+                    '''
+                }
+            }
+        }
+        stage('Construir con Maven') {
+            steps {
+                dir('/home/daniel/devops-java-addition-example') {
+                    sh 'mvn clean install'
+                }
+            }
+        }
+        stage('Instalar Dependencias en venv') {
+            steps {
+                dir('/home/daniel/devops-java-addition-example') {
+                    sh '''
+                    python3 -m venv venv
+                    source venv/bin/activate
+                    pip install -r requirements.txt
+                    '''
+                }
+            }
+        }
+        stage('Pruebas con Selenium') {
+            steps {
+                dir('/home/daniel/devops-java-addition-example') {
+                    sh '''
+                    source venv/bin/activate
+                    python3 src/test/python/test_addition.py
+                    '''
+                }
+            }
+        }
+        stage('Construir Imagen Docker') {
+            steps {
+                dir('/home/daniel/devops-java-addition-example') {
+                    sh 'docker build -t sumtwonumbers .'
+                }
+            }
+        }
+        stage('Desplegar en Docker') {
+            steps {
+                sh 'docker run -d --name sumtwonumbers -p 8080:8080 sumtwonumbers'
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Integración y Despliegue completados exitosamente.'
+        }
+        failure {
+            echo 'El Pipeline ha fallado.'
+        }
+    }
+}
+-e 
+### Contenido de src/test/python/test_addition.py ###
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+driver = webdriver.Chrome()
+driver.get("file:///home/daniel/devops-java-addition-example/src/test/resources/addition_test.html")  # Ruta local del archivo HTML
+
+input1 = driver.find_element(By.ID, "num1")
+input2 = driver.find_element(By.ID, "num2")
+submit = driver.find_element(By.ID, "submit")
+
+input1.send_keys("5")
+input2.send_keys("7")
+submit.click()
+
+result = driver.find_element(By.ID, "result").text
+assert result == "La suma es: 12", "Test fallido: Resultado incorrecto"
+
+driver.quit()
+-e 
+### Permisos del directorio del proyecto ###
+total 136
+drwxrwxr-x  6 jenkins jenkins  4096 Oct 30 17:59 .
+drwxr-xr-x 55 daniel  daniel  12288 Oct 30 17:59 ..
+drwxrwxr-x  8 jenkins jenkins  4096 Oct 30 17:55 .git
+-rw-r--r--  1 root    root     6257 Oct 30 17:59 info_recopilada.txt
+-rwxrwxr-x  1 jenkins jenkins  2004 Oct 30 17:55 Jenkinsfile
+-rwxrwxr-x  1 jenkins jenkins   496 Oct 30 15:33 pom.xml
+-rw-rw-r--  1 jenkins jenkins    47 Oct 30 17:49 requirements.txt
+-rwxrwxr-x  1 jenkins jenkins 78522 Oct 30 15:35 salida maven-build.txt
+drwxrwxr-x  3 jenkins jenkins  4096 Oct 30 15:39 src
+-rwxrwxr-x  1 jenkins jenkins   475 Oct 30 15:31 SumTwoNumbers.java
+drwxrwxr-x  4 jenkins jenkins  4096 Oct 30 17:29 target
+drwxrwxr-x  5 jenkins jenkins  4096 Oct 30 17:25 venv
