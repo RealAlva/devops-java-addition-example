@@ -36,9 +36,10 @@ pipeline {
                 sh 'docker build -t sumtwonumbers .'
             }
         }
-        stage('Desplegar en Docker') {
-            steps {
-                sh 'docker run -d --name sumtwonumbers -p 8080:8080 sumtwonumbers'
+	stage('Desplegar en Docker') 
+	{
+   	     steps {
+                sh 'docker run -d --name sumtwonumbers -p 8081:8080 sumtwonumbers'
             }
         }
     }
