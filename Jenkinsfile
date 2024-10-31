@@ -41,11 +41,9 @@ pipeline {
             // Eliminar el contenedor existente si está en ejecución
                 sh 'docker rm -f sumtwonumbers || true'
         
-            // Iniciar el contenedor en el puerto 8081
+            // Iniciar el contenedor en el puerto 8081 para evitar conflictos
                 sh 'docker run -d --name sumtwonumbers -p 8081:8080 sumtwonumbers'
             }
-        }
-        
     }
     post {
         success {
