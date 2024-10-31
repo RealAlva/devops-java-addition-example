@@ -36,12 +36,16 @@ pipeline {
                 sh 'docker build -t sumtwonumbers .'
             }
         }
-	stage('Desplegar en Docker') 
-	{
-   	     steps {
+        stage('Desplegar en Docker') {
+            steps {
+            // Eliminar el contenedor existente si está en ejecución
+                sh 'docker rm -f sumtwonumbers || true'
+        
+            // Iniciar el contenedor en el puerto 8081
                 sh 'docker run -d --name sumtwonumbers -p 8081:8080 sumtwonumbers'
             }
         }
+        
     }
     post {
         success {
