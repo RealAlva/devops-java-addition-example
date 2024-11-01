@@ -47,9 +47,10 @@ stage('Desplegar en Docker') {
         '''
 
         // Iniciar el contenedor en el puerto 8081 para evitar conflictos
-        sh 'docker run -d --name sumtwonumbers_new -p 8081:8080 sumtwonumbers'
+        sh 'docker run -d --name sumtwonumbers -p 8081:8080 sumtwonumbers'
     }
 }
+
     
     post {
         success {
