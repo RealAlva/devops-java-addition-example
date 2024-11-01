@@ -42,14 +42,14 @@ stage('Desplegar en Docker') {
     steps {
         // Verificar y eliminar el contenedor existente si está en ejecución
         sh '''
-        if [ "$(docker ps -aq -f name=sumtwonumbers)" ]; then
-            docker rm -f sumtwonumbers
+        if [ $(docker ps -aq -f name=sumtwonumbers) ]; then
+            docker rm -f sumtwonumbers || true
         fi
         '''
 
         // Validar que el contenedor ha sido eliminado antes de proceder
         sh '''
-        if [ "$(docker ps -aq -f name=sumtwonumbers)" ]; then
+        if [ $(docker ps -aq -f name=sumtwonumbers) ]; then
             echo "Error: El contenedor sumtwonumbers no pudo ser eliminado"
             exit 1
         fi
@@ -59,7 +59,6 @@ stage('Desplegar en Docker') {
         sh 'docker run -d --name sumtwonumbers -p 8081:8080 sumtwonumbers'
     }
 }
-
     post {
         success {
             echo 'Integración y Despliegue completados exitosamente.'
